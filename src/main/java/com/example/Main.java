@@ -15,10 +15,12 @@ public class Main {
         Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
 
         Statement statement = connection.createStatement();
+        String ifexittable="DROP TABLE IF EXISTS country";
+        statement.execute(ifexittable);
 
-//        String table="CREATE TABLE country (country_id int primary key , country_name varchar(20) not null," +
-//                "population int not null,area  int ,continent varchar(20))";
-//         statement.executeUpdate(table);
+        String table="CREATE TABLE country (country_id int primary key , country_name varchar(20) not null," +
+                "population int not null,area  int ,continent varchar(20))";
+         statement.executeUpdate(table);
 
 
         System.out.println("print all country from postgres---------------------");
@@ -116,7 +118,7 @@ public class Main {
         statement.executeUpdate(updateByID);
     }
 
-    public static void rollBack() {
+    public static void rollBack() throws SQLException {
         try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
             String add = "insert into country (country_id,country_name,population,area,continent) values(?,?,?,?,?)";
             PreparedStatement statement = connection.prepareStatement(add);
@@ -129,8 +131,6 @@ public class Main {
             statement.setString(5, Continent.NORTH_AMERICA.name());
             statement.executeUpdate();
             connection.rollback();
-        }catch (SQLException e){
-            e.printStackTrace();
         }
     }
 }
